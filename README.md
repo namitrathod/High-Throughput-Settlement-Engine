@@ -20,18 +20,18 @@ This engine was stress-tested using **Gatling** with **1,000 concurrent users** 
 
 ```mermaid
 graph TD
-    Client[Client / Gatling / Swagger] -->|POST /api/payments/pay| PC[Payment Controller]
-    PC -->|1. Check/Store Key| IS[Redis Idempotency - Sub-ms skip]
-    PC -->|2. Atomic Balance Move| AS[Account Service - PostgreSQL]
-    AS -->|3. Self-Healing Retry| RT[@Retryable Logic - Lock Resolution]
-    PC -->|4. Emit Event| K[Kafka - settlement-events]
-    K -->|5. Ledger Update| SC[Settlement Consumer]
-    SC -->|6. Tracking| OT[OpenTelemetry Tracking - TraceID]
+    Client["Client / Gatling / Swagger"] -->|POST /api/payments/pay| PC["Payment Controller"]
+    PC -->|"1. Check/Store Key"| IS["Redis Idempotency - Sub-ms skip"]
+    PC -->|"2. Atomic Balance Move"| AS["Account Service - PostgreSQL"]
+    AS -->|"3. Self-Healing Retry"| RT["@Retryable Logic - Lock Resolution"]
+    PC -->|"4. Emit Event"| K["Kafka - settlement-events"]
+    K -->|"5. Ledger Update"| SC["Settlement Consumer"]
+    SC -->|"6. Tracking"| OT["OpenTelemetry Tracking - TraceID"]
 ```
 
 ---
 
-## 💎 "Elite" Features (Why this project is different)
+## 💎 Key Architectural Features (Technical Deep-Dive)
 
 ### 🛡️ **Distributed Idempotency (Redis)**
 Prevents duplicate processing. If a network hiccup causes the user to hit "Pay" twice, the engine uses **Redis** to intercept the second request before it ever touches the database. 
