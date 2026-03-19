@@ -25,8 +25,8 @@ public class AccountService {
 
     @Retryable(
             retryFor = {OptimisticLockingFailureException.class},
-            maxAttempts = 10,
-            backoff = @Backoff(delay = 100, maxDelay = 2000, multiplier = 2.0, random = true)
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 100, maxDelay = 1000, multiplier = 2.0, random = true)
     )
     @Transactional
     public void processInternalTransfer(PaymentRequest request) {
